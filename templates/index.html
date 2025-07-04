@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>PizzaBot</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <style>
+        /* Minimal professional CSS directly included */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #0a0f2c;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .chatbox {
+            background: #0a0f2c;
+            padding: 20px;
+            border-radius: 16px;
+            width: 550px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
+            border: 5px solid rgba(255, 255, 255, 0.15); /* transparent white border */
+            backdrop-filter: blur(8px); /* optional for frosted-glass look */
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chatbox h2 {
+            margin-bottom: 15px;
+            color: #00FFFF;
+            text-align: center;
+        }
+
+        #chat-window {
+            height: 300px;
+            overflow-y: auto;
+            border: 3px solid rgba(255, 255, 255, 0.2); /* semi-transparent white border */
+            border-radius: 8px;
+            padding: 10px;
+            background-color: #1e1e1e;
+            margin-bottom: 15px;
+        }
+
+        #chat-window p {
+            margin: 8px 0;
+            padding: 8px;
+            border-radius: 6px;
+        }
+
+        #chat-window p strong {
+            color: #333;
+        }
+
+        #user-input {
+            flex-grow: 1;
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 6px;
+            border: 3px solid rgba(255, 255, 255, 0.2);
+            background-color: #1e1e1e;
+            color: #00FFFF;
+            margin-right: 10px;
+        }
+
+        button {
+            padding: 10px 16px;
+            background-color: #1e1e1e;
+            color: #00FFFF;
+            border: 3px solid rgba(255, 255, 255, 0.2);
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #006400;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 10px;
+        }
+        input::placeholder {
+            color: #00FFFF;  /* white color */
+            opacity: 1;       /* make sure it's fully visible */
+        }
+
+
+        @media (max-width: 600px) {
+            .chatbox {
+                margin: 20px;
+                width: 90%;
+            }
+
+            .input-group {
+                flex-direction: column;
+            }
+
+            #user-input {
+                margin-right: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="chatbox">
+        <h2>🍕 Welcome to PizzaBot</h2>
+        <div id="chat-window"></div>
+        <div class="input-group">
+            <input type="text" id="user-input" placeholder="Type your message..." />
+            <button onclick="sendMessage()">Send</button>
+        </div>
+    </div>
+
+    <script>
+    // Sends message to the backend
+    function sendMessage() {
+        const input = document.getElementById('user-input');
+        const message = input.value.trim();
+        if (!message) return;
+
+        appendToChat("You", message);
+        input.value = "";
+
+        //Show "typing..." while waiting
+        const chat = document.getElementById('chat-window');
+        const typingElem = document.createElement('p');
+        typingElem.className = 'bot typing';
+        typingElem.innerHTML = `<strong>PizzaBot</strong>typing...`;
+        chat.appendChild(typingElem);
+        chat.scrollTop = chat.scrollHeight;
+
+        fetch('/chat', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ message: message })
+        })
+        .then(res => res.json())
+        .then(data => {
+            chat.removeChild(typingElem);
+            appendToChat("PizzaBot", data.reply);
+        })
+        .catch(() => {
+            chat.removeChild(typingElem);
+            appendToChat("PizzaBot", "⚠️ Error contacting server.");
+        });
+    }
+
+    // Appends a message to the chat window
+    function appendToChat(sender, message) {
+        const chat = document.getElementById('chat-window');
+        const msgElem = document.createElement('p');
+        msgElem.className = sender === "You" ? 'user' : 'bot';
+        msgElem.innerHTML = `<strong>${sender}:</strong> ${message.replace(/\n/g, "<br>")}`;
+        chat.appendChild(msgElem);
+        chat.scrollTop = chat.scrollHeight;
+    }
+
+    // Enable pressing Enter to send message
+    document.addEventListener("DOMContentLoaded", function () {
+        const input = document.getElementById("user-input");
+        input.addEventListener("keydown", function (event) {
+            if (event.key === "Enter") {
+                event.preventDefault(); // Optional: prevent form submission
+                sendMessage();
+            }
+        });
+    });
+</script>
+
+</body>
+</html>

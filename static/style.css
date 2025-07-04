@@ -1,0 +1,151 @@
+/* Base styling */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #fff1e6;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    padding: 20px;
+}
+
+/* Chatbox container */
+.chatbox {
+    background: #ffffff;
+    padding: 24px;
+    border-radius: 18px;
+    width: 100%;
+    max-width: 500px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+    border: 2px solid #ff914d;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Heading */
+.chatbox h2 {
+    text-align: center;
+    color: #d35400;
+    margin-bottom: 20px;
+    font-size: 24px;
+}
+
+/* Chat window container */
+#chat-window {
+    background-color: #fdf6f0;
+    height: 340px;
+    overflow-y: auto;
+    border: 1px solid #ffe0c4;
+    border-radius: 10px;
+    padding: 14px;
+    margin-bottom: 16px;
+    font-size: 15px;
+    color: #333;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    scroll-behavior: smooth;
+}
+
+/* Message bubbles */
+p {
+    max-width: 80%;
+    padding: 10px 14px;
+    border-radius: 20px;
+    position: relative;
+    animation: fadeIn 0.3s ease;
+}
+
+p strong {
+    display: block;
+    font-size: 13px;
+    margin-bottom: 4px;
+}
+
+p.user {
+    background-color: #ffddb7;
+    align-self: flex-end;
+    border-bottom-right-radius: 4px;
+    text-align: right;
+}
+
+p.bot {
+    background-color: #ffeedd;
+    align-self: flex-start;
+    border-bottom-left-radius: 4px;
+}
+
+/* Input and button row */
+.input-group {
+    display: flex;
+    gap: 10px;
+}
+
+/* Text input field */
+input[type="text"] {
+    flex-grow: 1;
+    padding: 10px;
+    font-size: 15px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    outline: none;
+    transition: all 0.3s ease;
+}
+
+input[type="text"]:focus {
+    border-color: #ff914d;
+    box-shadow: 0 0 6px rgba(255, 145, 77, 0.5);
+}
+
+/* Send button */
+button {
+    padding: 10px 16px;
+    background-color: #ff914d;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 15px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #e76f00;
+}
+
+/* Bot typing animation */
+.typing {
+    font-style: italic;
+    color: #888;
+    animation: blink 1s steps(2, start) infinite;
+}
+
+/* Fade-in animation */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Typing dots animation */
+@keyframes blink {
+    0% { opacity: .2; }
+    20% { opacity: 1; }
+    100% { opacity: .2; }
+}
+
+/* Responsive design */
+@media (max-width: 600px) {
+    .chatbox {
+        width: 100%;
+        padding: 20px;
+    }
+
+    .input-group {
+        flex-direction: column;
+    }
+
+    input[type="text"], button {
+        width: 100%;
+    }
+}
